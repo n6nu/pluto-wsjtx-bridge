@@ -1,5 +1,24 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.5 — TX power + TX RF bandwidth in Settings (2026-05-03)
+
+The Settings dialog now exposes two TX-side controls that were
+CLI-only in v0.99.x:
+
+- **TX attenuation** (`pluto/tx_attenuation_db`): AD9361 hardware TX
+  attenuation in dB. Range 0 (full power, ~+0 dBm out on AD9363) to
+  −89.75 (minimum). Step 0.25 dB. **The bridge default is −30 dB**
+  (safe for bench testing into nearby SDRs), but that's typically
+  too quiet for a real rig (IC-705, FT-991A, etc.) across the
+  bench — raise it toward 0 dB if you can't hear the bridge.
+- **TX RF bandwidth** (`pluto/tx_rf_bandwidth_hz`): the AD9361's
+  TX-side analog LPF. 200 kHz to 40 MHz.
+
+Hot-swap on Apply via `PlutoDevice::setTxAttenuationDb` /
+`setTxRfBandwidthHz` (both mutex-protected, no bridge restart needed).
+
+Drop-in upgrade from v0.99.4.
+
 ## v0.99.4 — TX audio input device picker in Settings (2026-05-03)
 
 The Settings dialog now has a **TX audio input** combobox alongside

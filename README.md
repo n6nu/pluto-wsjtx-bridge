@@ -23,22 +23,29 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.4 (TX audio input picker in Settings)
+## Latest release — v0.99.5 (TX power + TX RF BW in Settings)
 
 | Variant | Download |
 |---|---|
-| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.4-setup.exe](pluto-wsjtx-bridge-0.99.4-setup.exe)** |
+| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.5-setup.exe](pluto-wsjtx-bridge-0.99.5-setup.exe)** |
 
-Adds a **TX audio input** combobox to the Settings dialog alongside
-the existing **RX audio output** picker. v0.99.x had this as a CLI
-flag only (`--tx-device`) — frustrating to find. Pick the device
-WSJT-X is configured to send TX audio to (typically **CABLE Output
-(VB-Audio Virtual Cable)** if you've routed WSJT-X output to
-VB-Cable Line 1). Hot-swap on Apply, no bridge restart needed.
+Adds two TX-side controls to the Settings dialog (were CLI-only):
+
+- **TX attenuation** (dB): AD9361 hardware TX gain. Range 0
+  (full power, ~+0 dBm out on AD9363) to −89.75 dB (minimum).
+  **The bridge default is −30 dB**, which is safe for bench
+  testing into nearby SDRs but typically too quiet for a real rig
+  across the bench. Raise it toward 0 dB if you can't hear the
+  bridge on your IC-705 / FT-991A / etc.
+- **TX RF bandwidth** (Hz): the AD9361's TX-side analog LPF.
+  200 kHz to 40 MHz.
+
+Hot-swap on Apply — no bridge restart required.
 
 Cumulative since v0.99.0:
 
-- **v0.99.4** — TX audio input picker in Settings (this release).
+- **v0.99.5** — TX attenuation + TX RF BW in Settings (this release).
+- **v0.99.4** — TX audio input device picker in Settings.
 - **v0.99.3** — fix `ptt_type=0x1` so WSJT-X PTT method=CAT
   actually fires (was reporting `0x8` = `RIG_PTT_GPION`, making
   WSJT-X show "PTT device: GPIO" and decline to send `\set_ptt`).
