@@ -23,28 +23,35 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.6 (fix silence TX on key-up / exit)
+## Latest release — v0.99.6 (fix: silence TX on key-up / exit)
 
 | Variant | Download |
 |---|---|
 | **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.6-setup.exe](pluto-wsjtx-bridge-0.99.6-setup.exe)** |
 
-Adds two TX-side controls to the Settings dialog (were CLI-only):
+**Critical fix.** Earlier v0.99.x builds left the AD9361's TX_LO
+running with the user's configured attenuation in place after
+`stopTx` (or bridge exit). Even with no IQ being pushed, the mixer's
+LO leakage radiated a steady residual carrier at the dial frequency
+— audible as a tone on any USB-mode receiver tuned 1 kHz below.
+Bridge exited cleanly but the Pluto kept transmitting until
+power-cycled.
 
-- **TX attenuation** (dB): AD9361 hardware TX gain. Range 0
-  (full power, ~+0 dBm out on AD9363) to −89.75 dB (minimum).
-  **The bridge default is −30 dB**, which is safe for bench
-  testing into nearby SDRs but typically too quiet for a real rig
-  across the bench. Raise it toward 0 dB if you can't hear the
-  bridge on your IC-705 / FT-991A / etc.
-- **TX RF bandwidth** (Hz): the AD9361's TX-side analog LPF.
-  200 kHz to 40 MHz.
+v0.99.6 actively silences TX in three places: `stopTx` (sets
+`hardwaregain = -89.75 dB` AND `TX_LO powerdown = 1`), `openLocked`
+(same parking on initial open so a fresh start can't briefly leak
+carrier), and `tearDownLocked` (defensive — last-chance silence
+before destroying the libiio context). `startTx` undoes the parking
+when the bridge is actually keyed.
 
-Hot-swap on Apply — no bridge restart required.
+If you've been seeing a tone on a nearby receiver after stopping
+the bridge, that was this bug. Upgrade and the carrier dies on
+key-up.
 
 Cumulative since v0.99.0:
 
-- **v0.99.6** — TX attenuation + TX RF BW in Settings (this release).
+- **v0.99.6** — silence TX on key-up / exit (this release).
+- **v0.99.5** — TX attenuation + TX RF BW controls in Settings.
 - **v0.99.4** — TX audio input device picker in Settings.
 - **v0.99.3** — fix `ptt_type=0x1` so WSJT-X PTT method=CAT
   actually fires (was reporting `0x8` = `RIG_PTT_GPION`, making
