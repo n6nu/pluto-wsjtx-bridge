@@ -23,18 +23,28 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.1 (real-audio TX, WSJT-X PTT-driven)
+## Latest release — v0.99.2 (zero-config first launch)
 
 | Variant | Download |
 |---|---|
-| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.1-setup.exe](pluto-wsjtx-bridge-0.99.1-setup.exe)** |
+| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.2-setup.exe](pluto-wsjtx-bridge-0.99.2-setup.exe)** |
 
-The bridge now transmits **WSJT-X audio**, not just a bench tone.
-Captures WSJT-X output from VB-Cable, runs it through the
-`SsbModulator` Hilbert phaser (USB/LSB), resamples 48 kHz I + Q to
-the Pluto's complex-IQ rate, scales to int16, and pushes to the
-AD9361. WSJT-X PTT (UDP `transmittingChanged` or CAT `\set_ptt`)
-drives half-duplex `startTx` / `stopTx`.
+Two fixes for the most common first-launch friction (the default
+`ip:192.168.2.1` URI doesn't match a Pluto+ on a DHCP LAN address):
+
+1. **Cross-INI seed from `pluto-rx-bridge`.** If you have the RX-only
+   bridge installed and configured, the WSJT-X bridge copies its
+   `[pluto]` section (URI, sample rate, RF BW, PPM, gain) on first
+   launch. Zero config when both bridges are installed.
+2. **"Discover" button in Settings** runs libiio's scan over the
+   network (mDNS) + USB backends and populates the Host URI line edit
+   with the first found Pluto.
+
+Real-audio TX (v0.99.1 feature, still here) — captures WSJT-X output
+from VB-Cable, runs through the SsbModulator Hilbert phaser, resamples
+48 kHz I + Q to the Pluto's complex-IQ rate, scales to int16, and
+pushes to the AD9361. WSJT-X PTT (UDP `transmittingChanged` or CAT
+`\set_ptt`) drives half-duplex `startTx` / `stopTx`.
 
 ### WSJT-X setup
 
@@ -51,7 +61,7 @@ drives half-duplex `startTx` / `stopTx`.
 4. Tune dial, click WSJT-X **Tune** or pick a CQ. The Pluto should
    radiate the modulated audio for as long as PTT is asserted.
 
-### Still NOT in v0.99.1 (deferred to v0.99.x)
+### Still NOT in v0.99.x (deferred)
 
 - Custom MainWindow with TX-side gain panel + manual PTT button.
   The bridge currently uses bridge-core's `RxMainWindow` (no PTT

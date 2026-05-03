@@ -1,5 +1,43 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.2 — zero-config first launch (cross-INI seed + Discover button) (2026-05-03)
+
+Two fixes for the most common first-launch friction: the bridge's
+default URI is `ip:192.168.2.1` (stock USB-RNDIS), but a Pluto+ on the
+LAN gets a DHCP address — so a fresh install showed "Pluto not
+reachable" until the user edited the URI by hand.
+
+### (a) Cross-INI seed from `pluto-rx-bridge`
+
+If you already have **`pluto-rx-bridge`** installed and configured for
+your Pluto, the WSJT-X bridge now copies the `[pluto]` section
+(`uri`, `sample_rate`, `rf_bandwidth_hz`, `ppm_correction`,
+`manual_gain_db`, `gain_mode`) from the rx-bridge's INI on first
+launch. **Zero config when both bridges are installed**: open the
+WSJT-X bridge, it works against the same Pluto.
+
+The seed runs only once — first launch. Subsequent edits to either
+bridge's INI stay independent.
+
+### (b) "Discover" button in Settings
+
+Settings dialog → Pluto settings → **Discover** button (next to the
+Host URI field) runs libiio's scan over the network (mDNS / DNS-SD
+via libxml2) AND USB backends, populates the URI line edit with the
+first device found.
+
+Useful for:
+
+- Pluto+ on a DHCP address that just changed.
+- Fresh install where `pluto-rx-bridge` isn't around to seed from.
+- Switching between USB-RNDIS and Ethernet without remembering the IP.
+
+If nothing is discovered (typical on a Windows box without Bonjour /
+mDNS), the status line under the button suggests the manual-fallback
+URIs to try (`ip:192.168.2.1`, `ip:<your-LAN-ip>`, `usb:`).
+
+Drop-in upgrade from v0.99.1.
+
 ## v0.99.1 — real-audio TX (WSJT-X PTT-driven) (2026-05-03)
 
 The bridge can now transmit **WSJT-X audio**, not just a bench tone.
