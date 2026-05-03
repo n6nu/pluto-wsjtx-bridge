@@ -23,11 +23,11 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.5 (TX power + TX RF BW in Settings)
+## Latest release — v0.99.6 (fix silence TX on key-up / exit)
 
 | Variant | Download |
 |---|---|
-| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.5-setup.exe](pluto-wsjtx-bridge-0.99.5-setup.exe)** |
+| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.6-setup.exe](pluto-wsjtx-bridge-0.99.6-setup.exe)** |
 
 Adds two TX-side controls to the Settings dialog (were CLI-only):
 
@@ -44,7 +44,7 @@ Hot-swap on Apply — no bridge restart required.
 
 Cumulative since v0.99.0:
 
-- **v0.99.5** — TX attenuation + TX RF BW in Settings (this release).
+- **v0.99.6** — TX attenuation + TX RF BW in Settings (this release).
 - **v0.99.4** — TX audio input device picker in Settings.
 - **v0.99.3** — fix `ptt_type=0x1` so WSJT-X PTT method=CAT
   actually fires (was reporting `0x8` = `RIG_PTT_GPION`, making

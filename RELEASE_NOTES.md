@@ -1,5 +1,34 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.6 — fix: silence TX on key-up / bridge exit (2026-05-03)
+
+**Critical fix.** Previously, after `stopTx` (or bridge exit), the
+AD9361's TX_LO stayed running with the user's configured attenuation
+in place. Even with no IQ samples being pushed, the mixer's LO
+leakage radiated a steady residual carrier at the dial frequency —
+audible as a tone on any USB-mode receiver tuned 1 kHz below.
+Bridge exited cleanly but the Pluto kept transmitting until
+power-cycled.
+
+Fix: TX is now actively silenced in three places:
+
+- **`stopTx()`** — write `hardwaregain = -89.75 dB` (max attenuation,
+  ~90 dB suppression) AND `altvoltage1 powerdown = 1` (TX_LO off).
+- **`openLocked()`** — same parking on initial open, so a fresh
+  bridge start doesn't briefly leak carrier in the window between
+  `applyAllParamsLocked` and the first `startTx`.
+- **`tearDownLocked()`** — defensive: if stopTx wasn't called for
+  some reason (crash, abnormal exit), park TX before destroying the
+  libiio context. Last chance to silence the chip.
+
+`startTx()` undoes the parking — restores the user's
+`tx_attenuation_db` and powers TX_LO back up — so the radiate path
+is unchanged when the bridge is actually keyed.
+
+If you've been seeing a tone on a nearby receiver after stopping
+the bridge, that was this bug. Upgrade and the carrier dies on
+key-up.
+
 ## v0.99.5 — TX power + TX RF bandwidth in Settings (2026-05-03)
 
 The Settings dialog now exposes two TX-side controls that were
