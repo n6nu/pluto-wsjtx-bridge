@@ -23,31 +23,45 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.0 (TX foundation)
+## Latest release — v0.99.1 (real-audio TX, WSJT-X PTT-driven)
 
 | Variant | Download |
 |---|---|
-| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.0-setup.exe](pluto-wsjtx-bridge-0.99.0-setup.exe)** |
+| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.1-setup.exe](pluto-wsjtx-bridge-0.99.1-setup.exe)** |
 
-**This release is the TX FOUNDATION.** The libiio push path is wired
-up and bench-verified — emits a 1 kHz tone via `--test-tone` that a
-nearby receiver with antenna can clearly see (+30 dB above noise
-floor at the bridge's TX freq). What's NOT yet in v0.99.0:
+The bridge now transmits **WSJT-X audio**, not just a bench tone.
+Captures WSJT-X output from VB-Cable, runs it through the
+`SsbModulator` Hilbert phaser (USB/LSB), resamples 48 kHz I + Q to
+the Pluto's complex-IQ rate, scales to int16, and pushes to the
+AD9361. WSJT-X PTT (UDP `transmittingChanged` or CAT `\set_ptt`)
+drives half-duplex `startTx` / `stopTx`.
 
-- Audio capture from VB-Cable
-- `SsbModulator` integration (real-audio TX)
-- Custom MainWindow with PTT button
-- WSJT-X `transmittingChanged` → real-audio TX
-- TX-side auto-reconnect
-- TX `IqBalancer` / DC-offset tuning
+### WSJT-X setup
 
-Use this build to confirm your Pluto's TX hardware is alive on your
-bench with a known-good antenna. Wait for v0.99.x for actual on-air
-WSJT-X QSOs.
+1. WSJT-X Settings → **Audio** → output to **VB-Cable Line 1** (or
+   whichever Windows audio device you'd like the bridge to capture
+   from).
+2. WSJT-X Settings → **Radio** → **Hamlib NET rigctl**, Network
+   Server `127.0.0.1:4536`. (Or rely on UDP-only PTT — the bridge
+   listens to `transmittingChanged` over WSJT-X UDP either way.)
+3. Launch the bridge:
+   ```
+   pluto-wsjtx-bridge.exe --host ip:<your-pluto-ip> --cat
+   ```
+4. Tune dial, click WSJT-X **Tune** or pick a CQ. The Pluto should
+   radiate the modulated audio for as long as PTT is asserted.
 
-### Bench verification
+### Still NOT in v0.99.1 (deferred to v0.99.x)
 
-Once installed, from a Command Prompt:
+- Custom MainWindow with TX-side gain panel + manual PTT button.
+  The bridge currently uses bridge-core's `RxMainWindow` (no PTT
+  button) — TX is driven entirely by WSJT-X UDP / CAT.
+- TX-side auto-reconnect (RX has it; TX bails on push error).
+- TX `IqBalancer` / DC-offset calibration.
+
+### Bench verification (--test-tone, no WSJT-X needed)
+
+If you want to verify the TX path without WSJT-X in the loop:
 
 ```
 cd "C:\Program Files\Pluto WSJT-X Bridge"

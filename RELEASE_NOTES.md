@@ -1,5 +1,81 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.1 — real-audio TX (WSJT-X PTT-driven) (2026-05-03)
+
+The bridge can now transmit **WSJT-X audio**, not just a bench tone.
+Capture WSJT-X output from VB-Cable, run it through the SsbModulator's
+audio-rate Hilbert phaser (USB/LSB), resample 48 kHz I + Q to the
+Pluto's complex-IQ rate, and push int16 samples to the AD9361.
+
+### Setup
+
+- Configure WSJT-X audio output to **VB-Cable Line 1** (or whatever
+  Windows audio device you're routing through).
+- Configure WSJT-X to point at the bridge's CAT server (Settings →
+  Radio → Hamlib NET rigctl → `127.0.0.1:4536`) **OR** rely on
+  WSJT-X UDP Status `transmittingChanged` to trigger PTT.
+- Launch the bridge:
+
+  ```
+  pluto-wsjtx-bridge.exe --host ip:<your-pluto-ip> --cat
+  ```
+
+  (omit `--cat` if you want UDP-only PTT path.)
+
+- Tune any nearby receiver to your dial freq, key WSJT-X (Tune button
+  or click a CQ caller) — the AD9361 should radiate the modulated
+  audio for as long as the PTT is asserted.
+
+### What changed since v0.99.0
+
+- `audio.startTxCapture()` runs at startup (unless `--test-tone`).
+  Audio buffers continuously, idle until PTT is asserted.
+- TX callback: `audio_tx_cb` pulls 48 kHz mono float audio from
+  `audio.tx_ring`, runs `modulator.hilbertAudio()` for sideband
+  selection, resamples I + Q to `sample_rate`, scales to int16
+  (`scale=16384`, ~6 dB headroom against full-scale), fills the
+  AD9361 push buffer.
+- WSJT-X UDP `transmittingChanged` and CAT `\set_ptt` BOTH drive
+  the same half-duplex sequence:
+  - **PTT on**: `pluto.stopRx()` → `modulator.reset()` →
+    `pluto.setPtt(true)` → `pluto.startTx()`
+  - **PTT off**: `pluto.setPtt(false)` → `pluto.stopTx()` →
+    `pluto.startRx()`
+- Sideband-selection flag (`is_lsb`) shared between freq-source
+  mode handlers and the TX callback so the right sideband is
+  emitted on every burst.
+- New `--tx-device <name>` CLI flag picks the audio capture
+  source (default: system default audio input).
+
+### Pluto vs HackRF TX path
+
+Pluto is **direct-conversion** — TX_LO is the dial freq and the
+AD9361 takes baseband I/Q directly. So we **skip** SsbModulator's
+upconvert step (which HackRF needs because its TX is at IF, not
+LO). The Hilbert-phasing audio I/Q is fed straight to the resampler
+and then scaled to int16 for the DAC.
+
+### Verified
+
+- Build clean. Bridge launches, registers TX callback, RX streams,
+  audio capture device opens.
+- `\set_ptt VFO 1` over TCP triggers `[Pluto] RX stopped` →
+  `[Pluto] TX worker started` → `[CAT PTT] ON — RX→TX swap`.
+- `\set_ptt VFO 0` reverses cleanly.
+- WSJT-X UDP path uses the same handler and is symmetric.
+
+### Still NOT in v0.99.1 (deferred to v0.99.x)
+
+- Custom MainWindow with a TX-side gain panel + manual PTT button
+  (currently uses bridge-core's `RxMainWindow`, no PTT button —
+  WSJT-X drives PTT entirely).
+- TX-side auto-reconnect (RX has it; TX bails on libiio push error
+  rather than retrying).
+- TX `IqBalancer` / DC-offset calibration (we lean on AD9361's
+  built-in TX calibration for now).
+
+Drop-in upgrade from v0.99.0.
+
 ## v0.99.0 — TX foundation (2026-05-03)
 
 First build of the **TX+RX transceiver** sibling to `pluto-rx-bridge`.
