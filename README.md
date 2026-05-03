@@ -23,11 +23,11 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.3 (fix WSJT-X PTT method=CAT)
+## Latest release — v0.99.4 (TX audio input picker in Settings)
 
 | Variant | Download |
 |---|---|
-| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.3-setup.exe](pluto-wsjtx-bridge-0.99.3-setup.exe)** |
+| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.4-setup.exe](pluto-wsjtx-bridge-0.99.4-setup.exe)** |
 
 Fixes WSJT-X **Settings → Radio → PTT method = CAT** so it actually
 fires the bridge's PTT toggle. The bridge's CAT server was reporting
@@ -39,7 +39,7 @@ actually implements. Test PTT now turns red on click as expected.
 
 Cumulative since v0.99.0:
 
-- **v0.99.3** — fix CAT PTT (this release).
+- **v0.99.4** — fix CAT PTT (this release).
 - **v0.99.2** — cross-INI seed from `pluto-rx-bridge` + "Discover"
   button (libiio scan) so a fresh install on a Pluto+ with a LAN
   DHCP address comes up with zero config.

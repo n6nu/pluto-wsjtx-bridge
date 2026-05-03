@@ -1,5 +1,29 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.4 — TX audio input device picker in Settings (2026-05-03)
+
+The Settings dialog now has a **TX audio input** combobox alongside
+the existing **RX audio output** picker. Was CLI-only (`--tx-device`)
+in v0.99.x — frustrating for users who couldn't find where to point
+the bridge at WSJT-X's VB-Cable output.
+
+- Combobox enumerates Windows audio capture devices via
+  `QtAudioBridge::availableInputDevices()`.
+- Pick the device WSJT-X is configured to send TX audio to (typically
+  **CABLE Output (VB-Audio Virtual Cable)** if you've routed WSJT-X
+  output to VB-Cable Line 1).
+- Persists to `[audio] tx_device` in the INI.
+- Hot-swap on Apply — `stopTxCapture` + `startTxCapture` on the new
+  device, no bridge restart needed.
+
+The change is in bridge-core's `RxSettingsDialog` (gated on a
+`show_tx_audio` ctor flag) so it's a no-op for the RX-only siblings;
+the ctor flag is set to `true` from `pluto-wsjtx-bridge`'s main.cpp.
+When `hackrf-wsjtx-bridge` eventually retrofits onto `RxMainWindow`,
+it'll inherit this for free.
+
+Drop-in upgrade from v0.99.3.
+
 ## v0.99.3 — fix WSJT-X PTT-method-CAT (2026-05-03)
 
 The bridge's CAT server (in bridge-core, shared with the other CAT-
