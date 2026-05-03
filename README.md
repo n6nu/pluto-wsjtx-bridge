@@ -23,11 +23,11 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.2 (zero-config first launch)
+## Latest release — v0.99.3 (fix WSJT-X PTT method=CAT)
 
 | Variant | Download |
 |---|---|
-| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.2-setup.exe](pluto-wsjtx-bridge-0.99.2-setup.exe)** |
+| **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.3-setup.exe](pluto-wsjtx-bridge-0.99.3-setup.exe)** |
 
 Two fixes for the most common first-launch friction (the default
 `ip:192.168.2.1` URI doesn't match a Pluto+ on a DHCP LAN address):

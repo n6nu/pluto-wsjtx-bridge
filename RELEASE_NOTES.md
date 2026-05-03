@@ -1,5 +1,36 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.3 — fix WSJT-X PTT-method-CAT (2026-05-03)
+
+The bridge's CAT server (in bridge-core, shared with the other CAT-
+enabled bridges) reported `ptt_type=0x8` in its `dump_state` response.
+That's `RIG_PTT_GPION` in Hamlib's enum (inverted GPIO pin) — wrong
+for a CAT-controlled rig.
+
+Symptom: WSJT-X **Settings → Radio → PTT method = CAT** showed
+**"PTT device: GPIO"** and refused to actually send `\set_ptt` over
+CAT. The bridge's PTT-toggle path never fired. Test PTT failed.
+
+Fix: changed `ptt_type=0x1` (`RIG_PTT_RIG`, "the rig handles PTT over
+CAT") — which is what we actually implement
+(`\set_ptt VFO 0|1` → `emit pttChanged(bool)`).
+
+After upgrading, in WSJT-X:
+
+- Settings → Radio → **PTT method = CAT**
+- Click **Test PTT** — should turn red, no errors. Click again to
+  release.
+- The bridge log now shows `[CAT PTT] ON — RX→TX swap`.
+
+Drop-in upgrade from v0.99.2.
+
+> **Cross-bridge note:** the same `ptt_type` fix is in
+> `bridge-core/CatServer.cpp`, so the other CAT-enabled bridges
+> (hackrf-wsjtx-bridge, pluto-rx-bridge, rtlsdr-rx-bridge) inherit
+> the fix on their next rebuild. If you have any of those installed
+> and were hitting the same WSJT-X "PTT device: GPIO" symptom, watch
+> for their next patch release.
+
 ## v0.99.2 — zero-config first launch (cross-INI seed + Discover button) (2026-05-03)
 
 Two fixes for the most common first-launch friction: the bridge's
