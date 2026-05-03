@@ -29,22 +29,27 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 |---|---|
 | **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.3-setup.exe](pluto-wsjtx-bridge-0.99.3-setup.exe)** |
 
-Two fixes for the most common first-launch friction (the default
-`ip:192.168.2.1` URI doesn't match a Pluto+ on a DHCP LAN address):
+Fixes WSJT-X **Settings → Radio → PTT method = CAT** so it actually
+fires the bridge's PTT toggle. The bridge's CAT server was reporting
+`ptt_type=0x8` (Hamlib's `RIG_PTT_GPION`, inverted GPIO) in its
+`dump_state` response, which made WSJT-X show "PTT device: GPIO"
+and refuse to send `\set_ptt`. Changed to `0x1` (`RIG_PTT_RIG`,
+"the rig handles PTT over CAT") — which is what the bridge
+actually implements. Test PTT now turns red on click as expected.
 
-1. **Cross-INI seed from `pluto-rx-bridge`.** If you have the RX-only
-   bridge installed and configured, the WSJT-X bridge copies its
-   `[pluto]` section (URI, sample rate, RF BW, PPM, gain) on first
-   launch. Zero config when both bridges are installed.
-2. **"Discover" button in Settings** runs libiio's scan over the
-   network (mDNS) + USB backends and populates the Host URI line edit
-   with the first found Pluto.
+Cumulative since v0.99.0:
 
-Real-audio TX (v0.99.1 feature, still here) — captures WSJT-X output
-from VB-Cable, runs through the SsbModulator Hilbert phaser, resamples
-48 kHz I + Q to the Pluto's complex-IQ rate, scales to int16, and
-pushes to the AD9361. WSJT-X PTT (UDP `transmittingChanged` or CAT
-`\set_ptt`) drives half-duplex `startTx` / `stopTx`.
+- **v0.99.3** — fix CAT PTT (this release).
+- **v0.99.2** — cross-INI seed from `pluto-rx-bridge` + "Discover"
+  button (libiio scan) so a fresh install on a Pluto+ with a LAN
+  DHCP address comes up with zero config.
+- **v0.99.1** — real-audio TX wired up. WSJT-X output captured
+  from VB-Cable → `SsbModulator` Hilbert phaser → resampled to
+  the Pluto's IQ rate → AD9361 DAC. WSJT-X PTT (UDP
+  `transmittingChanged` or CAT `\set_ptt`) drives half-duplex
+  `startTx` / `stopTx`.
+- **v0.99.0** — TX foundation: `PlutoDevice` extended with TX
+  path, `--test-tone` CLI for bench verification.
 
 ### WSJT-X setup
 
