@@ -29,17 +29,19 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 |---|---|
 | **Windows 10 / 11** (installer) | **[pluto-wsjtx-bridge-0.99.4-setup.exe](pluto-wsjtx-bridge-0.99.4-setup.exe)** |
 
-Fixes WSJT-X **Settings → Radio → PTT method = CAT** so it actually
-fires the bridge's PTT toggle. The bridge's CAT server was reporting
-`ptt_type=0x8` (Hamlib's `RIG_PTT_GPION`, inverted GPIO) in its
-`dump_state` response, which made WSJT-X show "PTT device: GPIO"
-and refuse to send `\set_ptt`. Changed to `0x1` (`RIG_PTT_RIG`,
-"the rig handles PTT over CAT") — which is what the bridge
-actually implements. Test PTT now turns red on click as expected.
+Adds a **TX audio input** combobox to the Settings dialog alongside
+the existing **RX audio output** picker. v0.99.x had this as a CLI
+flag only (`--tx-device`) — frustrating to find. Pick the device
+WSJT-X is configured to send TX audio to (typically **CABLE Output
+(VB-Audio Virtual Cable)** if you've routed WSJT-X output to
+VB-Cable Line 1). Hot-swap on Apply, no bridge restart needed.
 
 Cumulative since v0.99.0:
 
-- **v0.99.4** — fix CAT PTT (this release).
+- **v0.99.4** — TX audio input picker in Settings (this release).
+- **v0.99.3** — fix `ptt_type=0x1` so WSJT-X PTT method=CAT
+  actually fires (was reporting `0x8` = `RIG_PTT_GPION`, making
+  WSJT-X show "PTT device: GPIO" and decline to send `\set_ptt`).
 - **v0.99.2** — cross-INI seed from `pluto-rx-bridge` + "Discover"
   button (libiio scan) so a fresh install on a Pluto+ with a LAN
   DHCP address comes up with zero config.
