@@ -1,5 +1,37 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.8 — fix: PTT for WSJT-X data modes (PTT value 3 = DATA) (2026-05-04)
+
+**Critical follow-up to v0.99.7.** With v0.99.7 installed, Test PTT
+fired CAT commands but the bridge logged `[CAT PTT] off — TX→RX swap`
+instead of `ON`. From the live console:
+
+```
+CAT CMD: "T VFOA 3"
+[CAT PTT] off — TX→RX swap
+```
+
+WSJT-X in PKTUSB / PKTLSB modes (FT8 / FT4 / Q65 / etc.) sends Hamlib
+PTT value **3** (`PTT_DATA`), not 1. Our CAT handler was matching
+only the literal string `"1"` for ON; `"3"` fell through to the else
+branch and got parsed as OFF.
+
+Hamlib PTT enum:
+
+| Value | Meaning |
+|-------|---------|
+| 0 | OFF |
+| 1 | ON (standard) |
+| 2 | MIC PTT |
+| 3 | DATA PTT (WSJT-X data modes) |
+
+Fix: both the short-form `T` and long-form `\set_ptt` handlers now
+treat any non-zero value as ON. Affects all CAT-enabled bridges
+(bridge-core change), but only this one is being patched today —
+the rest inherit on their next rebuild.
+
+Drop-in upgrade from v0.99.7.
+
 ## v0.99.7 — fix: WSJT-X Test PTT now actually fires CAT \set_ptt (2026-05-03)
 
 **Critical fix.** Symptom: Test CAT green, Test PTT silent.
