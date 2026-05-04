@@ -1,5 +1,29 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v0.99.7 — fix: WSJT-X Test PTT now actually fires CAT \set_ptt (2026-05-03)
+
+**Critical fix.** Symptom: Test CAT green, Test PTT silent.
+
+The bridge's CAT server response to `\dump_state` was advertising
+`has_set_freq=1` and `has_get_freq=1` but missing `has_set_ptt=1`
+and `has_get_ptt=1`. Even though `ptt_type=0x1` (`RIG_PTT_RIG`)
+told WSJT-X the rig is CAT-PTT-capable, WSJT-X 2.6+ checks the
+explicit `has_set_ptt` flag before issuing `\set_ptt` over CAT —
+so Test PTT clicked but no command went out.
+
+Fix: dump_state now advertises:
+
+- `has_set_ptt=1` (CAT-driven PTT supported)
+- `has_get_ptt=1`
+- `has_set_mode=1`
+- `has_get_mode=1`
+
+(The bridge already implements all four. The `\set_ptt VFO 0|1`
+handler that emits `pttChanged` was working since v0.99.0;
+WSJT-X just wasn't sending the command.)
+
+Drop-in upgrade from v0.99.6.
+
 ## v0.99.6 — fix: silence TX on key-up / bridge exit (2026-05-03)
 
 **Critical fix.** Previously, after `stopTx` (or bridge exit), the
