@@ -1,5 +1,37 @@
 # Pluto WSJT-X Bridge — Release Notes
 
+## v1.0.0 — stable (2026-05-04)
+
+Promoted out of beta. The full TX+RX Pluto / Pluto+ transceiver
+made successful **2-way Q65 contacts on an IC-705 (2026-05-04)**
+and has soaked through the day's iterations on CAT, audio routing,
+and TX silencing (v0.99.0 → v0.99.8). The 0.99.x line ends here.
+
+Cumulative since v0.99.0 first build:
+
+- **All RX features of `pluto-rx-bridge` v1.0.0** — libiio over IP,
+  AD9361 4 gain modes, auto-reconnect, opt-in CAT, cross-INI seed,
+  Discover button, etc.
+- **Real-audio TX**: WSJT-X output captured from VB-Cable, run
+  through `SsbModulator`'s Hilbert phaser (USB/LSB), resampled
+  48 kHz I + Q to the Pluto's IQ rate, scaled to int16, and pushed
+  to the AD9361 DAC.
+- **WSJT-X PTT-driven half-duplex**. Both UDP
+  `transmittingChanged` and CAT `T VFOA n` / `\set_ptt VFO n`
+  drive the same RX→TX→RX swap. Hamlib PTT values `1`/`2`/`3`
+  all correctly start TX (PKTUSB / PKTLSB data modes send `3`).
+- **TX silenced on key-up and bridge exit**: AD9361 TX_LO powered
+  down + max attenuation parked. No residual carrier between
+  transmissions.
+- **Settings GUI**: TX attenuation 0..−89.75 dB, TX RF bandwidth,
+  TX audio input device. Hot-swap on Apply. RX-side: gain mode,
+  manual gain, sample rate, RF BW, PPM, libiio Discover button,
+  CAT server toggle + port.
+- **`--test-tone` bench-verification path** still available for
+  quick TX path testing without WSJT-X in the loop.
+
+INI compatible with v0.99.8 — drop-in upgrade.
+
 ## v0.99.8 — fix: PTT for WSJT-X data modes (PTT value 3 = DATA) (2026-05-04)
 
 **Critical follow-up to v0.99.7.** With v0.99.7 installed, Test PTT
