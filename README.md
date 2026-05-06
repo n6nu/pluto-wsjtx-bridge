@@ -23,7 +23,19 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v0.99.6 (fix: silence TX on key-up / exit)
+## Latest release — v1.1.0
+
+Download: **[pluto-wsjtx-bridge-1.1.0-setup.exe](https://github.com/n6nu/pluto-wsjtx-bridge/releases/latest/download/pluto-wsjtx-bridge-1.1.0-setup.exe)**
+
+What's new in v1.1.0 (2026-05-05) -- UI refresh. Main window now
+fixed-size 400x640. Settings moved from a button to a top-level
+**Settings** menu (`Ctrl+,`). New **Linrad rate** readout in the
+State grid. Settings dialog reflowed side-by-side, with a new
+**Linrad IQ rate** combo (defaults to "96 kHz (QMAP Default)").
+Drop-in upgrade; 96 kHz wire format unchanged.
+
+---
+### Previous release — v0.99.6 (fix: silence TX on key-up / exit)
 
 | Variant | Download |
 |---|---|
@@ -104,8 +116,6 @@ any nearby receiver (HackRF, RTL-SDR, real radio, SDRplay) to the
 same freq and confirm the carrier. **An antenna on the Pluto's TX1
 SMA jack is required** — without one, internal trace coupling is
 below noise floor and the bridge looks like it isn't working.
-
----
 
 ## Bundled third-party libraries
 
