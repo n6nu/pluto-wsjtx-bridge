@@ -23,7 +23,19 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ---
 
-## Latest release — v1.1.4
+## Latest release — v1.1.5
+
+Download: **[pluto-wsjtx-bridge-1.1.5-setup.exe](https://github.com/n6nu/pluto-wsjtx-bridge/releases/latest/download/pluto-wsjtx-bridge-1.1.5-setup.exe)**
+
+What's new in v1.1.5 (2026-05-08) -- Quality release. New Help menu
+with User Guide (F1) opening the bundled beta-tester PDF, and
+About Qt for LGPLv3 attribution. LGPL compliance polish: full
+LGPL license texts now ship in the install dir, and
+THIRD_PARTY_LICENSES.md got an explicit source-availability
+section. No RF / decode / wire-format changes. Drop-in upgrade.
+
+---
+### Previous release — v1.1.4
 
 Download: **[pluto-wsjtx-bridge-1.1.4-setup.exe](https://github.com/n6nu/pluto-wsjtx-bridge/releases/latest/download/pluto-wsjtx-bridge-1.1.4-setup.exe)**
 
