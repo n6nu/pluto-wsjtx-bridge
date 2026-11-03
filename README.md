@@ -2,9 +2,9 @@
 
 Windows installer downloads for the **Pluto WSJT-X Bridge** — a Qt6
 C++ application that turns an **ADALM-Pluto** or **Pluto+** into a
-WSJT-X-driven full TX+RX transceiver. Sibling to the
-[HackRF WSJT-X Bridge](https://github.com/n6nu/HackRF-WSJTX-Bridge),
-with the AD9361/AD9363 in place of HackRF One.
+**WS**-driven full TX+RX transceiver. Sibling to the [HackRF WSJT-X
+Bridge](https://github.com/n6nu/HackRF-WSJTX-Bridge), with the
+AD9361/AD9363 in place of HackRF One.
 
 For the **RX-only** companion (Pluto observation while a real radio
 handles TX) see the separate [pluto-rx-bridge](https://github.com/n6nu/pluto-rx-bridge)
@@ -18,6 +18,11 @@ build adds the AD9361 TX path: `cf-ad9361-dds-core-lpc` device,
 voltage0/1 DAC outputs, libiio push worker, TX attenuation control,
 half-duplex shared LO with RX, and CLI `--test-tone` for bench
 verification.
+
+The WS suite — **WS**, **WS-MAP** and **EME65** — lives at
+<https://wsjt-x-improved.sourceforge.io>, which is where most of this work went.
+
+<sub>Also works with WSJT-X, QMAP and MAP65.</sub>
 
 Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
