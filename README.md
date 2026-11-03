@@ -25,16 +25,15 @@ Author: **Andreas Junge, N6NU** &lt;<andreas@n6nu.org>&gt;.
 
 ## Current build
 
-The newest published release is **v2.1.1**:
-**[pluto-wsjtx-bridge-2.1.1-setup.exe](https://github.com/n6nu/pluto-wsjtx-bridge/releases/download/v2.1.1/pluto-wsjtx-bridge-2.1.1-setup.exe)**
+V3 is close to release, and the current build is well ahead of the published
+releases below:
 
-One thing to know before you install it: every installer up to and including v2.1.1 was packaged without the
-Microsoft Visual C++ runtime, so on a clean Windows machine it starts and
-closes again immediately. Installing the Microsoft Visual C++
-Redistributable cures that.
+**[pluto-wsjtx-bridge-3.1.7-setup.exe](https://bridges.n6nu.org/beta/pluto-wsjtx-bridge-3.1.7-setup.exe)**
 
-A V3 build with the runtime bundled is close to release. Ask if you
-would like the current one in the meantime.
+Prefer it over the releases listed below: every installer up to and including
+v2.1.1 was packaged without the Microsoft Visual C++ runtime, so on a clean
+Windows machine it starts and closes again immediately. This build carries the
+runtime with it, along with everything since June.
 
 ---
 
